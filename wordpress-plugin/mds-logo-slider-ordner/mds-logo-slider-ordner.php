@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MDS Logo-Slider Ordner
  * Description: Liefert die Bilder eines FileBird-Ordners für Logo-Slider und Bildergalerie aus (nur lesend): GET /wp-json/mds-logo-slider/v1/ordner/<id> oder /wp-json/mds-logo-slider/v1/ordner?pfad=Ordner/Unterordner
- * Version: 1.1.0
+ * Version: 1.1.1
  * Requires Plugins: filebird
  */
 
@@ -77,7 +77,8 @@ function mds_logo_slider_ordner( $request ) {
 		// Alte Markierungen wie [logo-slider-2026] nicht an Screenreader weitergeben.
 		$name = trim( preg_replace( '/\s*\[[a-z0-9-]+\]/', '', (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) ) );
 		if ( '' === $name ) {
-			$name = get_the_title( $id );
+			// get_the_title() liefert Entities wie &#8211; – als Klartext ausgeben.
+			$name = html_entity_decode( get_the_title( $id ), ENT_QUOTES, 'UTF-8' );
 		}
 		$logos[] = array(
 			'name'  => $name,
